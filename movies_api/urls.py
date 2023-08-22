@@ -1,12 +1,9 @@
-from django.urls import path, include
-from rest_framework import generics
-
-from movies_api.models import Movie
-from movies_api.serializers.movie_serializer import MovieSerializer
-from movies_api.views import MovieListView
+from django.urls import path
+from movies_api.views import MovieListView, ReviewAddView
 
 app_name = 'movies_api'
 
 urlpatterns = [
-    path('movies/', MovieListView.as_view(), name='movie_list')
+    path('movies/', MovieListView.as_view(), name='movie_list'),
+    path('reviews/', ReviewAddView.as_view(), name='add_review')
 ]

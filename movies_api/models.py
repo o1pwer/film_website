@@ -21,7 +21,8 @@ class Person(models.Model):
 class Movie(models.Model):
     title = models.CharField(max_length=200)
     release_date = models.DateField()
-    genres = models.ManyToManyField(Genre)
+    main_genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
+    genres = models.ManyToManyField(Genre, related_name='other_genres')
     directors = models.ManyToManyField(Person, related_name='directed_movies')
     actors = models.ManyToManyField(Person, related_name='acted_in_movies')
     rating = models.FloatField()
@@ -31,7 +32,13 @@ class Movie(models.Model):
     def __str__(self):
         return self.title
 
+class GalleryImage(models.Model):
+    movie = models.ForeignKey('Movie', on_delete=models.CASCADE, related_name='gallery_images')
+    image = models.ImageField(upload_to='movie_gallery/')
+    description = models.TextField(blank=True)
 
+    def __str__(self):
+        return f"Image for {self.movie.title}"
 class Review(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
