@@ -1,10 +1,11 @@
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import HttpResponse
 # Create your views here.
-from django.shortcuts import get_object_or_404
-from rest_framework import generics
+from django.utils.decorators import method_decorator
+from rest_framework import generics, status
 from rest_framework.generics import ListAPIView
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from movies_api.models import Movie, Review, Genre
@@ -115,16 +116,13 @@ class MovieDetailAPIView(generics.RetrieveAPIView):
             return Response({'detail': 'Genre not found'}, status=404)
 
 
-
-
-
 class ReviewAddView(generics.CreateAPIView):
     model = Review
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-
+    permission_classes = [IsAuthenticated]
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(status=201)
+        return Response(status=status.HTTP_201_CREATED)
