@@ -14,8 +14,7 @@ def obtain_auth_token(request):
         username = request.data.get('username')
         password = request.data.get('password')
 
-        user = authenticate(username=username, password=password)
-        if user:
+        if user := authenticate(username=username, password=password):
             token, created = Token.objects.get_or_create(user=user)
             return Response({'token': token.key})
         else:
@@ -41,7 +40,7 @@ def register(request):
     if request.method == 'POST':
         username = request.data.get('username')
         password = request.data.get('password')
-        email = request.data.get('email')  # You can add more fields as needed
+        email = request.data.get('email')
 
         try:
             User.objects.create_user(username=username, password=password, email=email)
